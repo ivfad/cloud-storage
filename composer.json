@@ -1,0 +1,26 @@
+{
+    "name": "app/some-app",
+    "description": "cloud-storage dependencies",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/",
+            "Core\\": "Core/"
+        },
+        "files": [
+            "router.php",
+            "functions.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "ivfad",
+            "email": "ivfad91@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+      "ext-pdo": "*"
+    }
+}
