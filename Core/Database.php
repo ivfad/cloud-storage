@@ -2,14 +2,16 @@
 
 namespace Core;
 
+use Config;
 use PDO;
 use PDOStatement;
 
 class Database
 {
-    public PDO $connection;
+    protected PDO $connection;
+    protected PDOStatement $statement;
 
-    public function __construct($config, $username = 'root', $password = '')
+    public function __construct($config = new Config, $username = 'root', $password = '')
     {
         $dsn = 'mysql:' . http_build_query($config, arg_separator: ';');
 
@@ -17,12 +19,32 @@ class Database
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         ]);
     }
-
-    public function query($query):PDOStatement
+    public function query(string $query):Database
     {
-        $statement = $this->connection->prepare($query);
-        $statement->execute();
+        $this->statement = $this->connection->prepare($query);
+        $this->statement->execute();
 
-        return $statement;
+        return $this;
+    }
+
+    public function get()
+    {
+        return $this->statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function find()
+    {
+        return $this->statement->fetch();
+    }
+
+    public function findOrFail()
+    {
+        $result = $this->statement->fetch();
+
+//        !$result ? : abort();
+        if(!$result) {
+            abort();
+        }
+
+        return $result;
     }
 }
