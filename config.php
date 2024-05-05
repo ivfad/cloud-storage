@@ -1,10 +1,15 @@
 <?php
 
-return [
-    'database' => [
-        'host' => 'localhost',
-        'port' => '3307',
-        'dbname' => 'cloud',
-        'charset' => 'utf8mb4',
-    ],
-];
+class Config
+{
+    public function __construct(
+        public string $host = 'localhost',
+        public int $port = 3307,
+        public string $dbname = 'cloud',
+        public string $charset = 'utf8mb4')
+    {}
+//    public string $host = 'localhost';
+//    public int $port = 3307;
+//    public string $dbname = 'cloud';
+//    public string $charset = 'utf8mb4';
+}
