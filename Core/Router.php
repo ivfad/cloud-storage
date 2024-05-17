@@ -2,59 +2,56 @@
 
 namespace Core;
 
+//require_once BASE_PATH . 'functions.php';
+
 class Router
 {
-    protected array $routes = [];
 
-    public function addRoute($uri, $controller, $method)
-    {
-        $this->routes [] = [
-            'uri' => $uri,
-            'controller' => $controller,
-            'method' => $method,
-        ];
-    }
+    protected array $routes = [
+        'GET' => [],
+        'POST' => [],
+    ];
 
-    public function get($uri, $controller)
+    public function __construct()
     {
-        $this->addRoute($uri, $controller, 'GET');
-    }
-
-    public function post($uri, $controller)
-    {
-        $this->addRoute($uri, $controller, 'POST');
-    }
-
-    public function put($uri, $controller)
-    {
-        $this->addRoute($uri, $controller, 'PUT');
-    }
-
-    public function patch($uri, $controller)
-    {
-        $this->addRoute($uri, $controller, 'PATCH');
-    }
-
-    public function delete($uri, $controller)
-    {
-        $this->addRoute($uri, $controller, 'DELETE');
-    }
-
-    public function route($uri, $method)
-    {
-        foreach ($this->routes as $route) {
-            if($route['uri'] === $uri && $route['method'] === strtoupper($method)) {
-                return $route['controller'];
-            }
-        }
-        return Router::abort(404);
+        $this->addRoutes();
     }
 
     protected function abort($code = 404)
     {
         http_response_code($code);
-        exit('404 Not found');
+        exit('4044444 Not found');
+    }
+
+    public function route(string $uri, string $method): void
+    {
+        $currentRoute = $this->findRoute($uri, $method);
+
+        if (! $currentRoute) {
+            $this->abort();
+        }
+    }
+
+    private function findRoute(string $uri, string $method): Route|false
+    {
+        if (! isset($this->routes[$method][$uri])) {
+            return false;
+        }
+
+        return $this->routes[$method][$uri];
+    }
+
+    private function addRoutes(): void
+    {
+        $routes = $this->getRoutes();
+
+        foreach ($routes as $route) {
+            $this->routes[$route->getMethod()][$route->getUri()] = $route;
+        }
+    }
+
+    private function getRoutes(): array
+    {
+        return require_once BASE_PATH.'routes.php';
     }
 }
-
-

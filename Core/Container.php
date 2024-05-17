@@ -21,8 +21,6 @@ class Container
         if (!$this->has($id)) {
             throw new \Exception("No matching binding {$id}");
         }
-
-//        return $this->bindings[$id];
         return call_user_func($this->bindings[$id]);
     }
 }
