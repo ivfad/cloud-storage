@@ -9,7 +9,7 @@
             "Core\\": "Core/"
         },
         "files": [
-            "Core/Router.php",
+          "Core/2Router.php",
             "functions.php"
         ]
     },
