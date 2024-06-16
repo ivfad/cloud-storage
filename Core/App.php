@@ -6,7 +6,7 @@ class App
 {
     protected static Container $container;
 
-    public static function setContainer(Container $container)
+    public static function setContainer(Container $container): void
     {
         static::$container = $container;
     }

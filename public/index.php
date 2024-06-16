@@ -1,26 +1,30 @@
 <?php
 
-use Core\Database;
+//use Core\Database;
 use Core\Router;
+use Core\Request;
+use Core\Response;
 
 const BASE_PATH = __DIR__ . '/../';
 
 require_once BASE_PATH . '/vendor/autoload.php';
 
-session_start();
+//session_start();
 
+//Connecting DB-config
 $config = require base_path('config.php');
-
-$uri = parse_url($_SERVER['REQUEST_URI'])['path'] ?? '/';
-$method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-
 
 $router = new Router();
 //$routes = require base_path('routes.php');
+$request = Request::createFromGlobals();
+//dd($request);
+$content = 'ABC TEST RESPONSE';
+$response = new Response($content);
+//$response = (new $controller())->$method;
+$response->send();
 
+$router->route($request->uri(), $request->method());
 
-
-$router->route($uri, $method);
 require_once  BASE_PATH . 'bootstrap.php';
 //$config = new Config;
 //$db = new Database($config);

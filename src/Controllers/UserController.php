@@ -9,7 +9,8 @@ use PDO;
 class UserController {
 
     public function __construct(private Database $db)
-    {}
+    {
+    }
 
     public function list():array
     {
