@@ -14,12 +14,17 @@ use Core\Route;
 
 
 return [
-    Route::get('/test', function() {
-        echo '123';
-        dd('/test');
-    }),
-    Route::get('/', function() {
-        echo '123';
-        dd('/');
-    }),
+//    Route::post('/test', function() {
+//        echo '123';
+//
+//    }),
+//    Route::get('/', function() {
+//        echo '123';
+//    }),
+    Route::get('/test3', \App\Controllers\TestController::class, 'index'),
+//    Route::post('/test3', \App\Controllers\TestController::class),
+//    Route::post('/test2', function() {
+//        echo '123';
+//
+//    }),
 ];
