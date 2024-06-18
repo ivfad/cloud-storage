@@ -7,12 +7,14 @@ use Core\App;
 $container = new Container();
 
 $container->bind(Database::class, function() {
-    return new Database();
+    require_once base_path('config.php');
+    $config = new Config;
+    return new Database($config);
 });
 
 $db = $container->get(Database::class);
 
-App::setContainer($container);
+//App::setContainer($container);
 
 
 
