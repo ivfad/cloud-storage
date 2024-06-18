@@ -1,6 +1,6 @@
 <?php
 
-//use Core\Database;
+use Core\Database;
 use Core\Router;
 use Core\Request;
 use Core\Response;
@@ -12,7 +12,9 @@ require_once BASE_PATH . '/vendor/autoload.php';
 //session_start();
 
 //Connecting DB-config
-$config = require base_path('config.php');
+//require_once base_path('config.php');
+require_once base_path('bootstrap.php');
+//require_once  BASE_PATH . 'bootstrap.php';
 
 $router = new Router();
 //$routes = require base_path('routes.php');
@@ -25,9 +27,8 @@ $response->send();
 
 $router->route($request->uri(), $request->method());
 
-require_once  BASE_PATH . 'bootstrap.php';
 //$config = new Config;
 //$db = new Database($config);
-//$result = $db->query("select * from user where id>2")->get();
-//dd($result);
+$result = $db->query("select * from user where id>2")->get();
+dd($result);
 require_once base_path('index.view.php');

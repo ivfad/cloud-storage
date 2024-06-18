@@ -1,14 +1,15 @@
 <?php
 
 namespace Core;
+use Psr\Container\ContainerInterface;
 
-class Container
+class Container implements ContainerInterface
 {
     protected array $bindings = [];
 
-    public function bind(string $id, object $service): void
+    public function bind(string $id, callable $resolver): void
     {
-        $this->bindings[$id] = $service;
+        $this->bindings[$id] = $resolver;
     }
 
     public function has(string $id): bool
@@ -19,8 +20,11 @@ class Container
     public function get(string $id): mixed
     {
         if (!$this->has($id)) {
-            throw new \Exception("No matching binding {$id}");
+            throw new ServiceNotFoundException("No matching binding for {$id}");
         }
-        return call_user_func($this->bindings[$id]);
+
+        $resolver = $this->bindings[$id];
+
+        return call_user_func($resolver);
     }
 }
