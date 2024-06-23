@@ -14,7 +14,7 @@ class UserController {
 
     public function list():array
     {
-//        $config = require BASE_PATH . 'config.php';
+//        $config = require BASE_PATH . 'Config.php';
 //        $db = new Database($config['database']);
         $usersList = $this->db->query("Select `name`, `age`, `gender` from `user`")->get();
 
@@ -23,7 +23,7 @@ class UserController {
 
     public function get($id)
     {
-//        $config = require BASE_PATH . 'config.php';
+//        $config = require BASE_PATH . 'Config.php';
 //        $db = new Database($config['database']);
 //        $usersList = $db->query("Select `name`, `age`, `gender` from `user`")->get();
     }
