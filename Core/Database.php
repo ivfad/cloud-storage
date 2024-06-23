@@ -6,12 +6,13 @@ use Config;
 use PDO;
 use PDOStatement;
 
-class Database
+class Database extends Singleton
+//class Database
 {
     protected PDO $connection;
     protected PDOStatement $statement;
 
-    public function __construct($config = new Config, $username = 'root', $password = '')
+    public function connect($config = new Config, $username = 'root', $password = '')
     {
         $dsn = 'mysql:' . http_build_query($config, arg_separator: ';');
 
@@ -19,6 +20,7 @@ class Database
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         ]);
     }
+
     public function query(string $query):Database
     {
         $this->statement = $this->connection->prepare($query);
@@ -31,6 +33,7 @@ class Database
     {
         return $this->statement->fetchAll(PDO::FETCH_ASSOC);
     }
+
     public function find()
     {
         return $this->statement->fetch();
