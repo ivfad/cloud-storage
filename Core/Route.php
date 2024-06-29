@@ -7,20 +7,29 @@ class Route
     public function __construct(
         private $uri,
         private $method,
-        private $controller,
         private $action
     )
     {
     }
 
-    public static function get(string $uri, $controller, $action):static
+    public static function get(string $uri, $action): static
     {
-        return new static($uri, 'GET', $controller, $action);
+        return new static($uri, 'GET', $action);
     }
 
-    public static function post(string $uri, $controller, $action):static
+    public static function post(string $uri, $action): static
     {
-        return new static($uri, 'POST', $controller, $action);
+        return new static($uri, 'POST', $action);
+    }
+
+    public static function put(string $uri, $action): static
+    {
+        return new static($uri, 'PUT', $action);
+    }
+
+    public static function delete(string $uri,$action): static
+    {
+        return new static($uri, 'DELETE', $action);
     }
 
     public function getUri():string
@@ -33,10 +42,10 @@ class Route
         return $this->method;
     }
 
-    public function getController():string
-    {
-        return $this->controller;
-    }
+//    public function getController():string
+//    {
+//        return $this->controller;
+//    }
 
     public function getAction()
     {

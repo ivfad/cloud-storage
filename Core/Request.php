@@ -1,7 +1,7 @@
 <?php
 
 namespace Core;
-/* Упрощенный аналог Symphony HttpFoundation */
+
 class Request
 {
 
