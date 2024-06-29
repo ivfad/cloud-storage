@@ -13,6 +13,7 @@ use Core\Route;
 //$router->put('/users/update', 'PUT users update-info page');
 
 
+//dd(\App\Controllers\TestController);
 return [
 //    Route::post('/test', function() {
 //        echo '123';
@@ -21,10 +22,12 @@ return [
 //    Route::get('/', function() {
 //        echo '123';
 //    }),
-    Route::get('/test3', \App\Controllers\TestController::class, 'index'),
+    Route::get('/test3', [\App\Controllers\TestController::class, 'index']),
+    Route::get('/', [\App\Controllers\HomeController::class, 'index']),
+    Route::post('/test2', [\App\Controllers\TestController::class, 'index']),
+    Route::put('/test2', [\App\Controllers\TestController::class, 'index']),
 //    Route::post('/test3', \App\Controllers\TestController::class),
-//    Route::post('/test2', function() {
-//        echo '123';
-//
-//    }),
+    Route::get('/test', function() {
+        echo '123';
+    }),
 ];
