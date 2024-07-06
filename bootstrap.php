@@ -6,16 +6,22 @@ use Core\App;
 use Core\TestReflectionMain;
 
 $container = Container::getInstance();
+//$test = 'test';
+//$container->bind($test, function() {
+//    return 'abc';
+//});
+//$container->get($test);
 
-$container->bind(Database::class, function() {
-    return Database::getInstance();
-});
-
+$container->singleton(Database::class, Database::getInstance());
+//$container->bind(Database::class, Database::getInstance());
 require_once base_path('Config.php');
 $db = $container->get(Database::class);
 
-$config = new Config;
+
+$config = new Config();
 $db->connect($config);
+
+
 
 //$container->bind(TestReflectionMain::class, function() {
 //    echo 'TestReflectionMain test output';
