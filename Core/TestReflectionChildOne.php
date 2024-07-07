@@ -6,6 +6,6 @@ class TestReflectionChildOne
 {
     public function __construct(int $id)
     {
-        var_dump($id);
+//        var_dump($id);
     }
 }
