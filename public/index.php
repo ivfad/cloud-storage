@@ -31,4 +31,4 @@ $content = $router->route($request->uri(), $request->method());
 //$router2 = new Router();
 $result = $db->query("select * from user where id>2")->get();
 //require_once base_path('index.view.php');
-//dd($result);
+dd($result);
