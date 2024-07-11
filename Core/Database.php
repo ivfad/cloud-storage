@@ -7,7 +7,6 @@ use PDO;
 use PDOStatement;
 
 class Database extends Singleton
-//class Database
 {
     protected PDO $connection;
     protected PDOStatement $statement;
@@ -21,10 +20,10 @@ class Database extends Singleton
         ]);
     }
 
-    public function query(string $query):Database
+    public function query(string $query, $params = []):Database
     {
         $this->statement = $this->connection->prepare($query);
-        $this->statement->execute();
+        $this->statement->execute($params);
 
         return $this;
     }
@@ -44,7 +43,7 @@ class Database extends Singleton
         $result = $this->statement->fetch();
 
 //        !$result ? : abort();
-        if(!$result) {
+        if(! $result) {
             abort();
         }
 

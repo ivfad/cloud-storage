@@ -3,21 +3,16 @@
 namespace App\Controllers;
 
 use Core\App;
+use Core\Controller;
 use Core\Database;
-use PDO;
+//use PDO;
 
-class UserController {
-
-    public function __construct(private Database $db)
-    {
-    }
+class UserController extends Controller{
 
     public function list():array
     {
-//        $config = require BASE_PATH . 'Config.php';
-//        $db = new Database($config['database']);
-        $usersList = $this->db->query("Select `name`, `age`, `gender` from `user`")->get();
-
+        $db= App::getContainer()->get(Database::class);
+        $usersList = $db->query("Select `name`, `age`, `gender` from `user`")->get();
         return $usersList;
     }
 
@@ -26,6 +21,11 @@ class UserController {
 //        $config = require BASE_PATH . 'Config.php';
 //        $db = new Database($config['database']);
 //        $usersList = $db->query("Select `name`, `age`, `gender` from `user`")->get();
+    }
+
+    public function update()
+    {
+
     }
 }
 

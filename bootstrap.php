@@ -17,6 +17,7 @@ $db = $container->get(Database::class);
 
 $config = new Config();
 $db->connect($config);
+//$db->connect();
 //$db->query('SELECT * FROM `users`');
 require_once base_path('Core/TestScenarios.php');
 
