@@ -42,11 +42,6 @@ class Route
         return $this->method;
     }
 
-//    public function getController():string
-//    {
-//        return $this->controller;
-//    }
-
     public function getAction()
     {
         return $this->action;

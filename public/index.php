@@ -10,25 +10,27 @@ const BASE_PATH = __DIR__ . '/../';
 require_once BASE_PATH . '/vendor/autoload.php';
 require_once base_path('bootstrap.php');
 
-//session_start();
-
-//$routes = require base_path('routes.php');
-//$response = (new $controller())->$method;
+//$url = parse_url($_SERVER['REQUEST_URI']);
+//
+//$url = explode('/', $url['path']);
+//
+//dd(array_pop($url));
 
 $router = new Router();
 
 $request = Request::createFromGlobals();
 
-//$router->route($request->uri(), $request->method());
 $content = $router->route($request->uri(), $request->method());
-//$content = 'ABC TEST RESPONSE';
-//$controller = $content->getController();
-//$method = $content->getAction();
-//dd($controller->index());
+
+$query = "select * from `user` where id > :id";
+$result = $db->query($query, [':id' => 2])->find();
+
+if (!$result['admin']) {
+    $content = 'Not authorized user';
+    $response = new Response($content, 403);
+    $response->send();
+}
 //$response = new Response($content);
 //$response->send();
-
-//$router2 = new Router();
-$result = $db->query("select * from user where id>2")->get();
 //require_once base_path('index.view.php');
-dd($result);
+//dd($result['admin']);
