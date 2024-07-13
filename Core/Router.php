@@ -2,11 +2,8 @@
 
 namespace Core;
 
-//require_once BASE_PATH . 'functions.php';
-
 class Router
 {
-
     protected array $routes = [
         'GET' => [],
         'POST' => [],
@@ -22,7 +19,6 @@ class Router
     private function addRoutes(): void
     {
         $routesList = $this->getRoutes();
-
         foreach ($routesList as $route) {
             $this->routes[$route->getMethod()][$route->getUri()] = $route;
         }
@@ -43,39 +39,82 @@ class Router
         exit('404 Not found');
     }
 
-    public function route(string $uri, string $method): void
+    public function route(Request $request): void
     {
-        $currentRoute = $this->findRoute($uri, $method);
-
+        $currentRoute = $this->findRoute($request->uri(), $request->method());
         if (! $currentRoute) {
             $this->abort(404);
         }
 
-        $action = $currentRoute->getAction();
-
-        if(is_array($action)){
-            $action = $this->useController($currentRoute->getAction());
+        $action = $currentRoute['route']->getAction();
+        $params = [];
+        if(is_array($action)) {
+            $params  = $currentRoute['params'];
+            $action = $this->useController($action);
         }
-
-        call_user_func($action);
-
+            call_user_func($action, $params);
     }
 
     public function useController($controller)
     {
         [$controller, $action] = $controller;
-        $controller = new $controller; //Плохо, переосмыслить!
+        $controller = new $controller; //Seems not good. Mb rework later
 
         return [$controller, $action];
     }
 
-    private function findRoute(string $uri, string $method): Route|false
+    private function findRoute(string $uri, string $method): ?array
     {
-        if (! isset($this->routes[$method][$uri])) {
-            return false;
+        $params = [];
+        if (isset($this->routes[$method][$uri])) {
+            $route = $this->routes[$method][$uri];
+            return ['route' => $route, 'params' => $params];
         }
 
-        return $this->routes[$method][$uri];
+        [$route, $params] =  $this->getRouteWithParams($uri, $method);
+
+        if ($route && $params) {
+            return ['route' => $route, 'params' => $params];
+        }
+
+        return null;
+    }
+
+    //Check if the route has parameters, like 'id' and 'name' in uri /example/{id}/{name}
+    private function getRouteWithParams(string $uri, string $method): ?array
+    {
+        $uriParts = explode('/', $uri);
+        array_shift($uriParts); // trims the first empty element
+
+        foreach($this->routes[$method] as $savedRoute) {
+            $parameters = [];
+            $savedRouteParts = explode('/', $savedRoute->getUri());
+            array_shift($savedRouteParts);
+
+            if(count($uriParts) !== count($savedRouteParts)) {
+                continue;
+            }
+
+            for ($i = 0; $i < count($savedRouteParts); $i++) {
+                $routePart = $savedRouteParts[$i];
+                $uriPart = $uriParts[$i];
+
+                if ($uriPart === $routePart) continue;
+                if ($uriPart == '') continue 2;
+
+                if (preg_match("/[{][\w]+[}]/", $routePart)) {
+                    $characters = ['{', '}'];
+                    $routePart = str_replace($characters, '', $routePart);
+                    $parameters[$routePart] = $uriParts[$i];
+                } else {
+                    continue 2;
+                }
+            }
+            $route = $this->routes[$method][$savedRoute->getUri()];
+            return [$route, $parameters];
+        }
+
+        return null;
     }
 
 }
