@@ -15,4 +15,14 @@ class App
     {
         return static::$container;
     }
+
+    public static function bind(string $id, string|callable $resolver)
+    {
+        static::getContainer()->bind($id, $resolver);
+    }
+
+    public static function get($id)
+    {
+        return static::getContainer()->get($id);
+    }
 }

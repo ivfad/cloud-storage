@@ -7,7 +7,9 @@ class Route
     public function __construct(
         private $uri,
         private $method,
-        private $action
+        private $action,
+        private $middleware = null,
+        private $uriParams = null,
     )
     {
     }
@@ -27,9 +29,20 @@ class Route
         return new static($uri, 'PUT', $action);
     }
 
+    public static function patch(string $uri, $action): static
+    {
+        return new static($uri, 'PATCH', $action);
+    }
+
     public static function delete(string $uri,$action): static
     {
         return new static($uri, 'DELETE', $action);
+    }
+
+    public function access($role)
+    {
+        $this->middleware = $role;
+        return $this;
     }
 
     public function getUri():string
@@ -45,5 +58,15 @@ class Route
     public function getAction()
     {
         return $this->action;
+    }
+
+    public function setUriParams(array $params):void
+    {
+        $this->uriParams = $params;
+    }
+
+    public function getMiddleware()
+    {
+        return $this->middleware;
     }
 }
