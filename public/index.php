@@ -1,12 +1,13 @@
 <?php
 
 declare(strict_types=1);
-
 use Core\Database;
 use Core\Router;
 use Core\Request;
 use Core\Response;
 const BASE_PATH = __DIR__ . '/../';
+
+session_start();
 
 require_once BASE_PATH . '/vendor/autoload.php';
 require_once base_path('bootstrap.php');
@@ -21,7 +22,10 @@ $content = $router->route($request);
 $query = "select * from `user` where id > :id";
 $result = $db->query($query, [':id' => 2])->find();
 
-if (!$result['admin']) {
+$currentUser = 0;
+//dd($currentUser);
+//if (!$result['admin']) {
+if ($currentUser !== 1) {
     $content = 'Not authorized user';
     $response = new Response($content, 403);
     $response->send();

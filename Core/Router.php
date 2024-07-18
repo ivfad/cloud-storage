@@ -2,12 +2,16 @@
 
 namespace Core;
 
+use Core\Middleware\Guest;
+use Core\Middleware\Auth;
+
 class Router
 {
     protected array $routes = [
         'GET' => [],
         'POST' => [],
         'PUT' => [],
+        'PATCH' => [],
         'DELETE' => [],
     ];
 
@@ -30,7 +34,7 @@ class Router
      */
     private function getRoutes(): array
     {
-        return require_once BASE_PATH.'routes.php';
+        return require_once BASE_PATH . 'routes.php';
     }
 
     protected function abort($code = 404)
@@ -42,17 +46,32 @@ class Router
     public function route(Request $request): void
     {
         $currentRoute = $this->findRoute($request->uri(), $request->method());
-        if (! $currentRoute) {
+        if (!$currentRoute) {
             $this->abort(404);
         }
 
+//        dd($currentRoute['route']->getMiddleware());
+//        dd($this->findRoute($request->uri(), $request->method()));
+        if($currentRoute['route']->getMiddleware()) {
+            $middleware = $currentRoute['route']->getMiddleware();
+            if($middleware === 'guest') {
+                $guest = new Guest;
+                $guest->handle();
+            }
+
+            if($middleware === 'auth') {
+                $auth = new Auth;
+                $auth->handle();
+            }
+//            dd($currentRoute['route']->getMiddleware());
+        }
         $action = $currentRoute['route']->getAction();
         $params = [];
-        if(is_array($action)) {
-            $params  = $currentRoute['params'];
+        if (is_array($action)) {
+            $params = $currentRoute['params'];
             $action = $this->useController($action);
         }
-            call_user_func($action, $params);
+        call_user_func($action, $params);
     }
 
     public function useController($controller)
@@ -71,7 +90,7 @@ class Router
             return ['route' => $route, 'params' => $params];
         }
 
-        [$route, $params] =  $this->getRouteWithParams($uri, $method);
+        [$route, $params] = $this->getRouteWithParams($uri, $method);
 
         if ($route && $params) {
             return ['route' => $route, 'params' => $params];
