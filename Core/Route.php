@@ -60,18 +60,26 @@ class Route
         return $this->action;
     }
 
-    public function setUriParams(array $params):void
+    public function setUriParams():void
     {
-        $this->uriParams = $params;
+        $uriParts = explode('/', $this->uri);
+        array_shift($uriParts); // trims the first empty element
+        $characters = ['{', '}'];
+        for($i = 0; $i < count($uriParts); $i++) {
+            if (preg_match("/[{][\w]+[}]/", $uriParts[$i])) {
+                $part = str_replace($characters, '', $uriParts[$i]);
+                $this->uriParams[intval($i)] = $part;
+            }
+        }
+    }
+
+    public function getUriParams()
+    {
+        return $this->uriParams;
     }
 
     public function getMiddleware()
     {
         return $this->middleware;
     }
-
-    public function getRouteParams()
-    {
-
     }
-}

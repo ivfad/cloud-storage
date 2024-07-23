@@ -5,8 +5,8 @@ use Core\Route;
 
 return [
     Route::get('/test3', [\App\Controllers\TestController::class, 'index']),
-    Route::get('/users/get/{ida}', [\App\Controllers\UserController::class, 'get']),
     Route::get('/files/share/{id}/{user}', [\App\Controllers\UserController::class, 'test']),
+    Route::get('/users/get/{ida}', [\App\Controllers\UserController::class, 'get']),
     Route::get('/users/list', [\App\Controllers\UserController::class, 'list']),
     Route::put('/users/update', [\App\Controllers\UserController::class, 'get']),
     Route::get('/register', [App\Controllers\RegistrationController::class, 'index'])->access('guest'),
