@@ -2,8 +2,7 @@
 
 namespace Core;
 
-use Core\Middleware\Guest;
-use Core\Middleware\Auth;
+use Core\Middleware\Middleware;
 
 class Router
 {
@@ -25,6 +24,8 @@ class Router
         $routesList = $this->getRoutes();
         foreach ($routesList as $route) {
             $this->routes[$route->getMethod()][$route->getUri()] = $route;
+            $route->setUriParams();
+
         }
     }
 
@@ -50,27 +51,20 @@ class Router
             $this->abort(404);
         }
 
-//        dd($currentRoute['route']->getMiddleware());
-//        dd($this->findRoute($request->uri(), $request->method()));
-        if($currentRoute['route']->getMiddleware()) {
-            $middleware = $currentRoute['route']->getMiddleware();
-            if($middleware === 'guest') {
-                $guest = new Guest;
-                $guest->handle();
-            }
+        $role = $currentRoute->getMiddleware() ?? false;
 
-            if($middleware === 'auth') {
-                $auth = new Auth;
-                $auth->handle();
-            }
-//            dd($currentRoute['route']->getMiddleware());
+        if ($role) {
+            Middleware::resolve($role);
         }
-        $action = $currentRoute['route']->getAction();
-        $params = [];
+
+        $params = $this->getParams($request->uri(), $currentRoute);
+
+        $action = $currentRoute->getAction();
+
         if (is_array($action)) {
-            $params = $currentRoute['params'];
-            $action = $this->useController($action);
+            $action = $this->useController($currentRoute->getAction());
         }
+
         call_user_func($action, $params);
     }
 
@@ -82,31 +76,21 @@ class Router
         return [$controller, $action];
     }
 
-    private function findRoute(string $uri, string $method): ?array
+    private function findRoute(string $uri, string $method): ?Route
     {
-        $params = [];
         if (isset($this->routes[$method][$uri])) {
             $route = $this->routes[$method][$uri];
-            return ['route' => $route, 'params' => $params];
+
+            return $route;
         }
 
-        [$route, $params] = $this->getRouteWithParams($uri, $method);
-
-        if ($route && $params) {
-            return ['route' => $route, 'params' => $params];
-        }
-
-        return null;
-    }
-
-    //Check if the route has parameters, like 'id' and 'name' in uri /example/{id}/{name}
-    private function getRouteWithParams(string $uri, string $method): ?array
-    {
         $uriParts = explode('/', $uri);
         array_shift($uriParts); // trims the first empty element
 
         foreach($this->routes[$method] as $savedRoute) {
-            $parameters = [];
+
+            if(!$savedRoute->getUriParams()) continue;
+
             $savedRouteParts = explode('/', $savedRoute->getUri());
             array_shift($savedRouteParts);
 
@@ -114,26 +98,81 @@ class Router
                 continue;
             }
 
+            $savedParams = $savedRoute->getUriParams();
+
             for ($i = 0; $i < count($savedRouteParts); $i++) {
-                $routePart = $savedRouteParts[$i];
-                $uriPart = $uriParts[$i];
 
-                if ($uriPart === $routePart) continue;
-                if ($uriPart == '') continue 2;
-
-                if (preg_match("/[{][\w]+[}]/", $routePart)) {
-                    $characters = ['{', '}'];
-                    $routePart = str_replace($characters, '', $routePart);
-                    $parameters[$routePart] = $uriParts[$i];
-                } else {
+                if(!(isset($savedParams[$i])))
+                {
+                    if ($uriParts[$i] === $savedRouteParts[$i]) continue;
                     continue 2;
                 }
+                if (!ctype_alnum($uriParts[$i])) continue 2;
+
             }
+
             $route = $this->routes[$method][$savedRoute->getUri()];
-            return [$route, $parameters];
+
+            return $route;
         }
 
         return null;
+
+    }
+
+
+//    private function getRoute(string $uri, string $method): ?Route
+//    {
+//        //Checks if the route has parameters, like 'id' and 'name' in uri /example/{id}/{name}
+//        $uriParts = explode('/', $uri);
+//        array_shift($uriParts); // trims the first empty element
+//
+//        foreach($this->routes[$method] as $savedRoute) {
+//
+//            if(!$savedRoute->getUriParams()) continue;
+//
+//            $savedRouteParts = explode('/', $savedRoute->getUri());
+//            array_shift($savedRouteParts);
+//
+//            if(count($uriParts) !== count($savedRouteParts)) {
+//                continue;
+//            }
+//
+//            $savedParams = $savedRoute->getUriParams();
+//
+//            for ($i = 3; $i < count($savedRouteParts); $i++) {
+//
+//                if(!(isset($savedParams[$i])))
+//                {
+//                    if ($uriParts[$i] === $savedRouteParts[$i]) continue;
+//                    continue 2;
+//                }
+//                if (!ctype_alnum($uriParts[$i])) continue 2;
+//
+//            }
+//
+//            $route = $this->routes[$method][$savedRoute->getUri()];
+//
+//            return $route;
+//        }
+//
+//        return null;
+//    }
+
+    private function getParams($uri, $currentRoute): array
+    {
+        $uriParts = explode('/', $uri);
+        array_shift($uriParts);
+
+        $parameters = [];
+
+        if($currentRoute->getUriParams()) {
+            foreach ($currentRoute->getUriParams() as $key => $paramName) {
+                $parameters[$paramName] = $uriParts[$key];
+            }
+        }
+
+        return $parameters;
     }
 
 }

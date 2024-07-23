@@ -21,6 +21,7 @@
     "minimum-stability": "stable",
     "require": {
       "ext-pdo": "*",
-        "psr/container": "^2.0"
+        "psr/container": "^2.0",
+      "ext-ctype": "*"
     }
 }
