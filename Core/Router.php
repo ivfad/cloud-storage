@@ -2,8 +2,7 @@
 
 namespace Core;
 
-use Core\Middleware\Guest;
-use Core\Middleware\Auth;
+use Core\Middleware\Middleware;
 
 class Router
 {
@@ -50,21 +49,12 @@ class Router
             $this->abort(404);
         }
 
-//        dd($currentRoute['route']->getMiddleware());
-//        dd($this->findRoute($request->uri(), $request->method()));
-        if($currentRoute['route']->getMiddleware()) {
-            $middleware = $currentRoute['route']->getMiddleware();
-            if($middleware === 'guest') {
-                $guest = new Guest;
-                $guest->handle();
-            }
+        $role = $currentRoute['route']->getMiddleware() ?? false;
 
-            if($middleware === 'auth') {
-                $auth = new Auth;
-                $auth->handle();
-            }
-//            dd($currentRoute['route']->getMiddleware());
+        if($role) {
+            Middleware::resolve($role);
         }
+
         $action = $currentRoute['route']->getAction();
         $params = [];
         if (is_array($action)) {

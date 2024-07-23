@@ -39,7 +39,7 @@ class Route
         return new static($uri, 'DELETE', $action);
     }
 
-    public function access($role)
+    public function access($role):self
     {
         $this->middleware = $role;
         return $this;
@@ -68,5 +68,10 @@ class Route
     public function getMiddleware()
     {
         return $this->middleware;
+    }
+
+    public function getRouteParams()
+    {
+
     }
 }
