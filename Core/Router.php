@@ -44,7 +44,7 @@ class Router
         exit('404 Not found');
     }
 
-    public function route(Request $request): void
+    public function route(Request $request): mixed
     {
         $currentRoute = $this->findRoute($request->uri(), $request->method());
         if (!$currentRoute) {
@@ -65,7 +65,7 @@ class Router
             $action = $this->useController($currentRoute->getAction());
         }
 
-        call_user_func($action, $params);
+        return call_user_func($action, $request, $params);
     }
 
     public function useController($controller)
@@ -119,45 +119,6 @@ class Router
         return null;
 
     }
-
-
-//    private function getRoute(string $uri, string $method): ?Route
-//    {
-//        //Checks if the route has parameters, like 'id' and 'name' in uri /example/{id}/{name}
-//        $uriParts = explode('/', $uri);
-//        array_shift($uriParts); // trims the first empty element
-//
-//        foreach($this->routes[$method] as $savedRoute) {
-//
-//            if(!$savedRoute->getUriParams()) continue;
-//
-//            $savedRouteParts = explode('/', $savedRoute->getUri());
-//            array_shift($savedRouteParts);
-//
-//            if(count($uriParts) !== count($savedRouteParts)) {
-//                continue;
-//            }
-//
-//            $savedParams = $savedRoute->getUriParams();
-//
-//            for ($i = 3; $i < count($savedRouteParts); $i++) {
-//
-//                if(!(isset($savedParams[$i])))
-//                {
-//                    if ($uriParts[$i] === $savedRouteParts[$i]) continue;
-//                    continue 2;
-//                }
-//                if (!ctype_alnum($uriParts[$i])) continue 2;
-//
-//            }
-//
-//            $route = $this->routes[$method][$savedRoute->getUri()];
-//
-//            return $route;
-//        }
-//
-//        return null;
-//    }
 
     private function getParams($uri, $currentRoute): array
     {

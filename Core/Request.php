@@ -32,6 +32,11 @@ class Request
        return $this->getParams;
     }
 
+    public function post()
+    {
+        return $this->postParams;
+    }
+
     public function uri()
     {
         return parse_url($this->server['REQUEST_URI'])['path'] ?? '/';
