@@ -42,10 +42,11 @@ class UserModel {
 }
 
 
-//$container->bind(DatabaseDriver::class, Postgre::class);
+$container->bind(DatabaseDriver::class, Postgre::class);
 //
 //
-//$container->get(UserModel::class);
+//$container->get('12');
+$container->get(UserModel::class);
 
 //$container->bind(TestReflectionMain::class, function() {
 //    echo 'TestReflectionMain test output';

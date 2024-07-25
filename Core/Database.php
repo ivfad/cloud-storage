@@ -11,13 +11,14 @@ class Database extends Singleton
     protected PDO $connection;
     protected PDOStatement $statement;
 
-    public function connect($config = new Config, $username = 'root', $password = '')
+    public function connect($config = new Config, $username = 'root', $password = ''): mixed
     {
         $dsn = 'mysql:' . http_build_query($config, arg_separator: ';');
 
         $this->connection = new PDO($dsn, $username, $password, [
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         ]);
+        return $this->connection;
     }
 
     public function query(string $query, $params = []):Database

@@ -1,27 +1,36 @@
 <?php
 
-use Core\Singleton;
+//use Core\Singleton;
 use Core\Container;
 use Core\Database;
 use Core\App;
-use Core\TestReflectionMain;
+use Psr\Container\ContainerExceptionInterface;
 
-$container = Container::getInstance();
+//use Core\TestReflectionMain;
+try {
+    $container = Container::getInstance();
+} catch (ContainerExceptionInterface $e) {
+    echo $e->getMessage();
+}
 
 App::setContainer($container);
 
 $container->singleton(Database::class, Database::getInstance());
-
 require_once base_path('Config.php');
 $db = $container->get(Database::class);
 
 $config = new Config();
-$db->connect($config);
-//$db->connect();
-//$db->query('SELECT * FROM `users`');
-require_once base_path('Core/TestScenarios.php');
 
-//
+try {
+    $db->connect($config);
+} catch (PDOException $e) {
+    echo 'PDOException: ' . $e->getMessage();
+}
+
+require_once base_path('Core/TestScenarios.php');
+//$container->bind('abc', 'abc');
+//dd($container);
+
 //require_once base_path('Core/Model.php');
 //require_once base_path('Core/View.php');
 require_once base_path('Core/Controller.php');
