@@ -15,6 +15,7 @@ require_once base_path('bootstrap.php');
 $router = new Router();
 
 $request = Request::createFromGlobals();
+
 $content = $router->route($request);
 
 $response = new Response($content);

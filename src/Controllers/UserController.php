@@ -27,8 +27,8 @@ class UserController extends Controller{
 
     public function login(Request $request)
     {
-        $email = ($request->post())['email'];
-        $password = ($request->post())['password'];
+        $email = $request->post()['email'];
+        $password = $request->post()['password'];
 
         $user = $this->model->getUserByEmail($email);
 
@@ -47,15 +47,16 @@ class UserController extends Controller{
 
         session_regenerate_id(true);
 
+        header('location: /');
+        exit();
     }
 
     public function logout()
     {
-//        $_SESSION = [];
         session_destroy();
-
         $params = session_get_cookie_params();
         setcookie('PHPSESSID', '', time() - 3600, $params['path'], $params['domain']);
+
         header('location: /');
         exit();
     }

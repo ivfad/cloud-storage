@@ -17,7 +17,6 @@ return [
     Route::get('/logout', [UserController::class, 'logout'])->access('user'),
     Route::get('/reset', [UserController::class, 'reset'])->access('user'),
 
-
     Route::get('/test3', [TestController::class, 'index']),
     Route::get('/files/share/{id}/{user}', [UserController::class, 'test']),
     Route::get('/register', [App\Controllers\RegistrationController::class, 'index'])->access('guest'),

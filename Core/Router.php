@@ -6,6 +6,7 @@ use Core\Middleware\Middleware;
 
 class Router
 {
+
     protected array $routes = [
         'GET' => [],
         'POST' => [],
@@ -29,10 +30,6 @@ class Router
         }
     }
 
-    /**
-     * Return routes from routes list
-     * @return Route[]
-     */
     private function getRoutes(): array
     {
         return require_once BASE_PATH . 'routes.php';
