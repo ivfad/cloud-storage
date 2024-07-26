@@ -3,7 +3,6 @@
 namespace Core;
 use Core\Exceptions\ContainerException;
 use Core\Exceptions\ContainerNotFoundException;
-//use Core\Exceptions\ItemInstantiabilityException;
 use Exception;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
@@ -13,8 +12,16 @@ use ReflectionException;
 //use Psr\Container\NotFoundExceptionInterface;
 //use Core\ItemInstantiabilityException;
 
-class Container extends Singleton implements ContainerInterface
+class Container implements ContainerInterface
 {
+    /**
+     * IoC (Inversion of control) container implementation
+     * The container manages the implementation of dependencies and acts as a layer
+     * on which you can get them if necessary.
+     */
+
+    use SingletonTrait;
+
     /**
      * List of entries
      * @var array
@@ -64,9 +71,6 @@ class Container extends Singleton implements ContainerInterface
 
     /**
      * Finds an entry of the container by its identifier and returns it.
-     *
-     * In case an entry is associated with container and its resolver is callable - this resolver is called
-     * In case an associated entry is singleton - its resolver (object) is returned
      * @param string $id
      * @return mixed
      * @throws ContainerException
@@ -80,14 +84,6 @@ class Container extends Singleton implements ContainerInterface
                 echo $e->getMessage();
             }
         }
-
-//        if ($this->has($id) && is_callable($this->bindings[$id])) {
-//            return call_user_func($this->bindings[$id]);
-//        }
-//
-//        if ($this->has($id) && is_object($this->bindings[$id])) {
-//            return $this->bindings[$id];
-//        }
 
         try {
             $instance = $this->createInstance($id);
@@ -132,21 +128,23 @@ class Container extends Singleton implements ContainerInterface
         return $reflection;
     }
 
-
     /**
-     * Create instance of an item and instances of its dependencies (recursively), if needed
+     * Create instance of an item and recursively create instances of its dependencies(if needed)
      * Case 1 - an entry is associated with container and its resolver is callable - this resolver is called
      * Case 2 - an associated entry is singleton - its resolver (object) is returned
      * Case 3 - an instantiable item has empty constructor - means no dependencies to resolve, new instance of item is returned
      * Case 4 - $id is an abstract class or interface, resolver is set - resolver instance is created (recursion)
      * Case 5 - element without dependencies has no bindings - exception
-     * @param $id
+     * Case 6 - no parameters needed - new instance of item is returned
+     * Case 7 - for each parameter of the constructor recursively check and add parameter instance to list
+     * Return instance of $id with all instances of parameters of its constructor
+     * @param string $id
      * @return mixed
-     * @throws ReflectionException
+     * @throws ContainerException
      * @throws ContainerNotFoundException
+     * @throws ReflectionException
      */
-
-    protected function createInstance($id)
+    protected function createInstance(string $id): mixed
     {
         //Case 1
         if ($this->has($id) && is_callable($this->bindings[$id])) {
@@ -172,24 +170,23 @@ class Container extends Singleton implements ContainerInterface
         }
 
         //Case 5
-        if(empty($constructor) && !isset($this->bindings[$id])) {
+        if (empty($constructor) && !isset($this->bindings[$id]))
+        {
             throw new ContainerNotFoundException("{$id} is not instantiable");
         }
 
         $parameters = $constructor->getParameters();
         $parametersList = [];
 
-        //Case 2.6, when there are no parameters in the constructor
-        if(empty($parameters)) return new $id;
+        //Case 6
+        if (empty($parameters)) return new $id;
 
-        //Case 2.7, when there are any parameters in the constructor, recursively check and add to list every parameter instance
+        //Case 7
         foreach ($parameters as $parameter) {
-
             if(!$parameter->getType() && !$parameter->isOptional()) {
-                throw new Exception("{$parameter->getName()} for {$id} is not instantiable");
+                throw new ContainerException("Parameter {$parameter->getName()} of {$id} is not instantiable");
             }
             $parametersList []= $this->createInstance($parameter->getType()->getName());
-
         }
 
         return new $id(...$parametersList);

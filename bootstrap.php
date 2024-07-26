@@ -7,8 +7,9 @@ use Core\App;
 use Psr\Container\ContainerExceptionInterface;
 
 //use Core\TestReflectionMain;
-try {
     $container = Container::getInstance();
+
+try {
 } catch (ContainerExceptionInterface $e) {
     echo $e->getMessage();
 }

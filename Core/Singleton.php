@@ -4,6 +4,10 @@ namespace Core;
 
 abstract class Singleton
 {
+    /**
+     * Singleton pattern implementation
+     * @return static
+     */
     protected static array $instances = [];
 
     protected function __construct() {}
@@ -25,6 +29,5 @@ abstract class Singleton
         }
 
         return static::$instances[$class];
-
     }
 }
