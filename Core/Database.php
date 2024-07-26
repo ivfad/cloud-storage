@@ -6,8 +6,9 @@ use Config;
 use PDO;
 use PDOStatement;
 
-class Database extends Singleton
+class Database
 {
+    use SingletonTrait;
     protected PDO $connection;
     protected PDOStatement $statement;
 

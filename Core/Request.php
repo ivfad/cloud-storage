@@ -4,7 +4,6 @@ namespace Core;
 
 class Request
 {
-
     /**
      * @param array $getParams The GET parameters
      * @param array $postParams The POST parameters
@@ -23,7 +22,7 @@ class Request
     }
 
     /**
-     * Creates a request based on the current PHP global variables
+     * Create a request based on the current PHP global variables
      * @return static
      */
     public static function createFromGlobals(): static
