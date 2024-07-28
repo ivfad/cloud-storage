@@ -4,8 +4,14 @@ namespace Core;
 
 class Response
 {
+    /**
+     * Create a new HTTP response.
+     * @param mixed $content
+     * @param int $statusCode
+     * @param string $headers
+     */
     public function __construct(
-        private mixed $content,
+        private mixed $content = '',
         private int $statusCode = 200,
         private string $headers = '',
     )
@@ -29,6 +35,9 @@ class Response
 
     public function setContent($content): void
     {
+        if($content instanceof Renderable) {
+            $content = $content->render();
+        }
         $this->content = $content;
     }
 

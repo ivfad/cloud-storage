@@ -17,6 +17,7 @@ $router = new Router();
 $request = Request::createFromGlobals();
 
 $content = $router->route($request);
+dd(13);
 
 $response = new Response($content);
 //$response->json()->send();

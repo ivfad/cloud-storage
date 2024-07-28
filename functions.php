@@ -14,9 +14,9 @@ function base_path($path):string
     return BASE_PATH . $path;
 }
 
-function authorize($condition, $status = 403)
-{
-    if(! $condition) {
-        dd('Not authorized');
-    }
-}
+//function authorize($condition, $status = 403)
+//{
+//    if(! $condition) {
+//        dd('Not authorized');
+//    }
+//}

@@ -1,12 +1,16 @@
 <?php
 
-//use Core\Database;
 use App\Controllers\UserController;
 use App\Controllers\HomeController;
 use App\Controllers\TestController;
 use Core\Route;
 
+/**
+ * Here is where web routes can be registered
+ */
+
 return [
+
     Route::get('/users/list', [UserController::class, 'list']),
     Route::get('/users/get/{id}', [UserController::class, 'get'])->access('user'),
     Route::put('/users/update', [UserController::class, 'update'])->access('user'),
