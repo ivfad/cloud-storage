@@ -61,7 +61,6 @@ class Router
         if (is_array($action)) {
             $action = $this->useController($currentRoute->getAction());
         }
-
         return call_user_func($action, $request, $params);
     }
 

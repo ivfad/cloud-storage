@@ -3,14 +3,10 @@
 namespace Core;
 use Core\Exceptions\ContainerException;
 use Core\Exceptions\ContainerNotFoundException;
-use Exception;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionException;
 
-//use Psr\Container\ContainerExceptionInterface;
-//use Psr\Container\NotFoundExceptionInterface;
-//use Core\ItemInstantiabilityException;
 
 class Container implements ContainerInterface
 {
@@ -74,23 +70,37 @@ class Container implements ContainerInterface
      * @param string $id
      * @return mixed
      * @throws ContainerException
+     * @throws ContainerNotFoundException
      */
     public function get(string $id): mixed
     {
-        if (! $this->has($id)) {
-            try{
+        try {
+            if (! $this->has($id)) {
                 $this->checkInstantiability($id);
-            } catch (ReflectionException $e) {
-                echo $e->getMessage();
             }
+            return $this->createInstance($id);
+        } catch(ReflectionException|ContainerNotFoundException $e) {
+            throw new ContainerNotFoundException($e->getMessage());
+        } catch(ContainerException $e) {
+            throw new ContainerException($e->getMessage());
         }
 
-        try {
-            $instance = $this->createInstance($id);
-        } catch(Exception $e) {
-            echo $e->getMessage();
-        }
-        return $instance;
+//        if (! $this->has($id)) {
+//            try {
+//                $this->checkInstantiability($id);
+//            } catch (ReflectionException $e) {
+//                echo $e->getMessage();
+//            }
+//        }
+//
+//        try {
+//            $instance = $this->createInstance($id);
+//            return $instance;
+//        } catch(Exception $e) {
+//            echo $e->getMessage();
+//        }
+
+        return null;
     }
 
     /**
@@ -122,7 +132,7 @@ class Container implements ContainerInterface
         $reflection = new ReflectionClass($id);
 
         if (! isset($reflection)) {
-            throw new ReflectionException("Cannot create reflection if {$id}");
+            throw new ReflectionException("Cannot create reflection of {$id}");
         }
 
         return $reflection;

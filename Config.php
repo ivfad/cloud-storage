@@ -2,6 +2,9 @@
 
 class Config
 {
+    /**
+     * Configuration of database
+     */
     public function __construct(
         public string $host = 'localhost',
         public int $port = 3307,
