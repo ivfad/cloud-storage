@@ -10,6 +10,7 @@ class Request
      * @param array $cookies The COOKIE parameters
      * @param array $files The FILES parameters
      * @param array $server The SERVER parameters
+     * @param array $methodsList The list of allowed HTTP methods, besides GET and POST
      */
     public function __construct(
         private readonly array $getParams,
@@ -17,6 +18,7 @@ class Request
         private readonly array $cookies,
         private readonly array $files,
         private readonly array $server,
+        private readonly array $methodsList = ['PUT', 'PATCH', 'DELETE'],
     )
     {
     }
@@ -48,7 +50,6 @@ class Request
         return $this->postParams;
     }
 
-
     /**
      * Parse request URL and return its path
      * @return string
@@ -65,6 +66,15 @@ class Request
      */
     public function method(): string
     {
+
+//        if($this->server['REQUEST_METHOD'] =='POST' && isset($_POST['_method'])) {
+//            $methodsList = ['PUT', 'PATCH', 'DELETE'];
+//            dd(in_array($_POST['_method'], $methodsList));
+            if (isset($_POST['_method']) && in_array($_POST['_method'], $this->methodsList)) {
+//            if (in_array($_POST['_method'], $this->methodsList)) {
+                return $_POST['_method'];
+            }
+//        }
         return $this->server['REQUEST_METHOD'] ?? 'GET';
     }
 }

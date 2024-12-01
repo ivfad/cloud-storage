@@ -22,7 +22,8 @@ class Response
     {
         header($this->headers);
         http_response_code($this->statusCode);
-        echo $this->content;
+//        echo $this->content;
+        dd($this->content);
         exit();
     }
 

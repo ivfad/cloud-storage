@@ -11,14 +11,27 @@ use Core\Route;
 
 return [
 
-    Route::get('/users/list', [UserController::class, 'list']),
+    Route::get('/users/list', [UserController::class, 'list'])->access('user'),
+//    Route::get('/users/get/{id}', [UserController::class, 'get']),
     Route::get('/users/get/{id}', [UserController::class, 'get'])->access('user'),
+
+//    Route::get('/users/update', [UserController::class, 'update'])->access('user'), //test
+
+    Route::get('/users/update', [UserController::class, 'updateView'])->access('user'),
     Route::put('/users/update', [UserController::class, 'update'])->access('user'),
+//    Route::put('/users/update', [UserController::class, 'update']),
+//    Route::post('/users/update', [UserController::class, 'update']),
     Route::get('/login', [UserController::class, 'loginView'])->access('guest'), //post!!
+//    Route::get('/login', [UserController::class, 'loginView'])->access('guest'), //post!!
+//    Route::get('/login', [UserController::class, 'loginView']), //post!!
 
     Route::post('/login', [UserController::class, 'login']),
 
+//    Route::get('/update', [UserController::class, 'update'])->access('user'),
+
     Route::get('/logout', [UserController::class, 'logout'])->access('user'),
+
+//    Route::get('/logout', [UserController::class, 'logout'])->access('admin'),
     Route::get('/reset', [UserController::class, 'reset'])->access('user'),
 
     Route::get('/test3', [TestController::class, 'index']),

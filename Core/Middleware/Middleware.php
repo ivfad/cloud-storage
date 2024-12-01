@@ -7,6 +7,7 @@ class Middleware
     const ROLES = [
         'guest' => Guest::class,
         'user' => User::class,
+        'admin' => Admin::class,
     ];
 
     public static function resolve($role)
