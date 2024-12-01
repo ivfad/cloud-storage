@@ -4,7 +4,7 @@ namespace Core\Middleware;
 
 class User
 {
-    public function handle()
+    public function handle(): void
     {
 //        $user = $_SESSION ? $_SESSION['user'] : false;
 //        dd($_SESSION ? $_SESSION['user'] : false);

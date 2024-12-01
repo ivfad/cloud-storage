@@ -18,7 +18,6 @@ class UserModel extends Model
     public function getUsersList(): bool|array
     {
         $list = $this->db->query('Select `name`, `age`, `gender` from `user`')->get();
-
         return $list;
     }
 
@@ -40,4 +39,15 @@ class UserModel extends Model
         return $user;
     }
 
+    public function updateUserInfo($name, $age, $gender, $email)
+    {
+        $user = $this->db->query('Update `user` SET `name` = :name, `age` = :age, `gender` = :gender
+            WHERE `email` = :email', [
+            ':name' => $name,
+            ':age' => $age,
+            ':gender' => $gender,
+            ':email' => $email
+        ]);
+//        ])->find();
+    }
 }

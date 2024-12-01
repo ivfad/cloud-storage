@@ -26,7 +26,6 @@ class Router
         foreach ($routesList as $route) {
             $this->routes[$route->getMethod()][$route->getUri()] = $route;
             $route->setUriParams();
-
         }
     }
 
@@ -38,6 +37,7 @@ class Router
     protected function abort($code = 404)
     {
         http_response_code($code);
+//        dd($_SERVER);
         exit('404 Not found');
     }
 
@@ -55,8 +55,8 @@ class Router
         }
 
         $params = $this->getParams($request->uri(), $currentRoute);
-
         $action = $currentRoute->getAction();
+//        dd($request);
 
         if (is_array($action)) {
             $action = $this->useController($currentRoute->getAction());

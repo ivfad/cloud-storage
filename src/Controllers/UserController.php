@@ -9,6 +9,7 @@ use Core\Database;
 use Core\Request;
 use Core\Route;
 use Core\View;
+use JetBrains\PhpStorm\NoReturn;
 
 
 class UserController extends Controller{
@@ -39,8 +40,9 @@ class UserController extends Controller{
         if(!password_verify($password, $user['password'])) {
             return 'Incorrect password';
         }
-
+//        dd(session_status());
         $_SESSION['user'] = [
+            'id' => $user['id'],
             'email' => $email,
             'admin' => $user['admin'],
         ];
@@ -51,7 +53,7 @@ class UserController extends Controller{
         exit();
     }
 
-    public function logout()
+    #[NoReturn] public function logout()
     {
         session_destroy();
         $params = session_get_cookie_params();
@@ -80,9 +82,18 @@ class UserController extends Controller{
         echo 'id = ' . $id . ' user =' . $user . PHP_EOL;
     }
 
-    public function update()
+    public function updateView(Request $request)
     {
+        return require_once base_path('update.view.php');
+    }
 
+    public function update(Request $request)
+    {
+//        dd($request);
+    dd($request->post());
+//        $id = $params['id'];
+//        updateUserInfo
+//        dd($_SESSION['user']['id']);
     }
 }
 
